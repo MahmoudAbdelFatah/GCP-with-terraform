@@ -151,4 +151,4 @@ $ kubectl apply -f services.yaml
 $ kubectl apply -f deploy.yaml
 ```
 
-![This is a alt text.](/images/lb.png)
+![This is a alt text.](/images/image-lb.png)

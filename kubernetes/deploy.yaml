@@ -1,47 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deploy
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: frontend
-  template:
-    metadata:
-      labels:
-        app: frontend
-    spec:
-      containers:
-      - name: frontend
-        image: gcr.io/gcp-terraform-357100/python-app
-        ports:
-        - containerPort: 80
-        
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-deploy
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-      - name: redis-container
-        image: gcr.io/gcp-terraform-357100/python-app
-        ports:
-        - containerPort: 6379
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: jenkins-deploy
   namespace: develop-area
 spec:

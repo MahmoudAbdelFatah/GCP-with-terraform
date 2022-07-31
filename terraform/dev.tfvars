@@ -2,7 +2,7 @@ region     = "us-central1"
 zone       = "us-central1-a"
 project_id = "gcp-terraform-357100"
 
-credentials_file_path = "./service-account-credentials.json"
+credentials_file_path = "./.terraform/service-account-credentials.json"
 service_account       = "my-sa-817@gcp-terraform-357100.iam.gserviceaccount.com"
 cluster_node_zones    = ["us-central1-b"]
 

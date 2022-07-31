@@ -54,8 +54,18 @@ spec:
       labels:
         app: jenkins
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 0
       containers:
       - name: jenkins
         image: jenkins/jenkins:lts
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: jenkins-pvc
+          mountPath: "/var/jenkins_home"
+      volumes:
+      - name: jenkins-pvc
+        persistentVolumeClaim:
+            claimName: jenkins-pvc

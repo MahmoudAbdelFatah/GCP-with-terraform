@@ -13,10 +13,6 @@ spec:
       labels:
         app: jenkins
     spec:
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
-        privileged: true
       containers:
       - name: jenkins
         image: rizk95/jenkins_with_docker_terra_ansible_kubectl
@@ -25,11 +21,20 @@ spec:
           name: http
         - containerPort: 50000
           name: jnlp
+        securityContext:
+          allowPrivilegeEscalation: true
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsUser: 0
         volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker    
         - name: jenkins-pvc
           mountPath: "/var/jenkins_home"          
+      #serviceAccountName: access-gke-cluster
+      securityContext:
+        fsGroup: 1000 
+        runAsUser: 1000      
       volumes:
       - name: jenkins-pvc
         persistentVolumeClaim:

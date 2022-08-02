@@ -1,0 +1,32 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: access-gke-cluster
+rules:
+- apiGroups: [""]
+  resources: 
+    - deployments
+    - persistentvolumes
+    - nodes
+  verbs: ["get", "list", "create", "watch"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: access-gke-cluster
+subjects:
+- kind: ServiceAccount
+  name: access-gke-cluster
+  namespace: develop-area
+roleRef:
+  kind: ClusterRole
+  name: access-gke-cluster
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: access-gke-cluster
+  namespace: develop-area

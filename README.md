@@ -182,6 +182,7 @@ $ kubectl apply -f deploy.yaml
     # Copy the config file inside the pod, run the following command on the bastion host
     $ kubectl cp  ~/.kube/config <pod-name>:/var/jenkins_home/.kube/config -n develop-area
  ```
+ Or Using the clusterRole and service account instead
  - Run the jenkins using loadbalancer **ip:8080**, get the admin password by the following commnad on the bastion host
  ```bash
  $ kubectl exec -it <pod-nam> cat /var/jenkins_home/secrets/initialAdminPassword -n develop-area
@@ -194,18 +195,15 @@ $ kubectl apply -f deploy.yaml
  - Check the deployment of CI/CD pipeline by `kubectl get all -n deploy-area` 
     
     ![This is a alt text.](/images/2.png)
-    ![This is a alt text.](/images/3.png)
+    ![This is a alt text.](/images/4.png)
     
 - **Note**: In this Jenkins Kubernetes deployment we have used the `securityContext` for Jenkins pod to be able to write to the local persistent volume.
 ```
     ...
     spec:
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
-        privileged: true
-      containers:
-      - name: jenkins
+        fsGroup: 1000 
+        runAsUser: 1000 
       ...
 ```
 

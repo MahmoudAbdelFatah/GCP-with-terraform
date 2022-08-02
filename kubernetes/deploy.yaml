@@ -14,20 +14,28 @@ spec:
         app: jenkins
     spec:
       securityContext:
-        runAsUser: 1000
+        runAsUser: 0
         fsGroup: 0
+      serviceAccountName: jenkins-admin
       containers:
       - name: jenkins
-        image: jenkins/jenkins:lts
+        image: rizk95/jenkins_with_docker_terra_ansible_kubectl
         ports:
         - containerPort: 8080
           name: http
-        - containerPort: 3000
+        - containerPort: 50000
           name: jnlp
         volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker    
         - name: jenkins-pvc
           mountPath: "/var/jenkins_home"
+        securityContext:
+          privileged: true
       volumes:
       - name: jenkins-pvc
         persistentVolumeClaim:
             claimName: jenkins-pvc
+      - name: docker
+        hostPath:
+          path: /var/run/docker.sock

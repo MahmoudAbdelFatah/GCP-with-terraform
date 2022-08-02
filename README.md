@@ -15,7 +15,7 @@ Creating a private Kubernetes (GKE) cluster in Google Cloud Platform (GCP) using
 * Using GCR (Artifacts registry) to deploy the docker image.
 * Deployment is exposed to public internet with a public HTTP load balancer.
 * Deployment on GKE done manually by kubectl tool.
-* The code to be build/dockerized and pushed to GCR is [here](https://github.com/atefhares/DevOps-Challenge-Demo-Code).
+* The code to be build/dockerized and pushed to GCR is [here](https://github.com/MahmoudAbdelFatah/DevOps-Challenge-Demo-Code.git).
 * Using custom Service Account (SA) and attach it to node and Bastion VM.
 * Only the management subnet can connect to the gke cluster.
 * Using Load Balancer to route external traffic to the Worker Nodes.

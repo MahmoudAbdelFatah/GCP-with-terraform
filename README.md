@@ -19,6 +19,8 @@ Creating a private Kubernetes (GKE) cluster in Google Cloud Platform (GCP) using
 * Using custom Service Account (SA) and attach it to node and Bastion VM.
 * Only the management subnet can connect to the gke cluster.
 * Using Load Balancer to route external traffic to the Worker Nodes.
+* Using Load Balancer to access the dashboard of the jenkins to run pipeline.
+* Run a pipeline to deployment the app.
 
 ![This is a alt text.](/images/private-gke-2.jpeg)
 
@@ -26,9 +28,10 @@ Creating a private Kubernetes (GKE) cluster in Google Cloud Platform (GCP) using
 ## Tools Used
 
 * Docker Platform
-* Kubernetes
+* Kubernetes (GKE)
 * Terraform
 * glcoud (Google Cloud CLI)
+* Jenkins
 
 
 ## Project Steps
@@ -38,6 +41,7 @@ Creating a private Kubernetes (GKE) cluster in Google Cloud Platform (GCP) using
 1. [Build image and upload to GCR](#Build-image-and-upload-to-GCR)
 1. [Connect to private GKE cluster via Bastion VM](#Connect-to-private-GKE-cluster-via-Bastion-VM)
 1. [On the Bastion host](#on-the-bastion-host)
+1. [Run CICD pipeline](#Run-CICD-pipeline)
 
 
 ### Configure GCP Credentials
@@ -152,3 +156,56 @@ $ kubectl apply -f deploy.yaml
 ```
 
 ![This is a alt text.](/images/image-lb.png)
+
+
+
+### Run CICD pipeline
+ - Using this [image](https://hub.docker.com/r/rizk95/jenkins_with_docker_terra_ansible_kubectl) to deploy jenkins pod which is contains the docker and kubectl installed on it.
+ - Copy the deployment files into the bastion host to run `kubectl apply -f .`
+ 
+    ```
+    # run this command on the local machine...
+    # gcloud compute scp --recurse <file-deployment-files-name> <host-name>:~/
+    $ gcloud compute scp --recurse kubernetes mahmoud@management-vm:~/
+    ```
+    Check the deployment state `kubectl get all -n develop-area`
+    
+    ![This is a alt text.](/images/1.png)
+
+    
+ - Setup Credentials in Jenkins to Access GKE
+ ```bash
+    # Enter the pod jenkins
+    $ kubectl exec -it <pod-name> bash -n develop-area
+    # inside pod in /var/jenkins_home directory create a folder .kube
+    $ mkdir .kube
+    # Copy the config file inside the pod, run the following command on the bastion host
+    $ kubectl cp  ~/.kube/config <pod-name>:/var/jenkins_home/.kube/config -n develop-area
+ ```
+ - Run the jenkins using loadbalancer **ip:8080**, get the admin password by the following commnad on the bastion host
+ ```bash
+ $ kubectl exec -it <pod-nam> cat /var/jenkins_home/secrets/initialAdminPassword -n develop-area
+ ```
+ - Create the pipeline on jenkins pod, this is the [CI/CD pipeline](https://github.com/MahmoudAbdelFatah/DevOps-Challenge-Demo-Code/blob/master/jenkinsfile)
+ - Deploy the app on different namespace called `deploy-area` and expose it by loadbalancer, open the app on **ip:8000**
+ 
+ ![This is a alt text.](/images/3.png)
+ 
+ - Check the deployment of CI/CD pipeline by `kubectl get all -n deploy-area` 
+    
+    ![This is a alt text.](/images/2.png)
+    ![This is a alt text.](/images/3.png)
+    
+- **Note**: In this Jenkins Kubernetes deployment we have used the `securityContext` for Jenkins pod to be able to write to the local persistent volume.
+```
+    ...
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+        privileged: true
+      containers:
+      - name: jenkins
+      ...
+```
+

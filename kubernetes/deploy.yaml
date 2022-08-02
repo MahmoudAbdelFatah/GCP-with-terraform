@@ -15,7 +15,8 @@ spec:
     spec:
       securityContext:
         runAsUser: 1000
-        fsGroup: 0
+        fsGroup: 1000
+        privileged: true
       containers:
       - name: jenkins
         image: rizk95/jenkins_with_docker_terra_ansible_kubectl
@@ -28,9 +29,7 @@ spec:
         - mountPath: /var/run/docker.sock
           name: docker    
         - name: jenkins-pvc
-          mountPath: "/var/jenkins_home"
-        securityContext:
-          privileged: true
+          mountPath: "/var/jenkins_home"          
       volumes:
       - name: jenkins-pvc
         persistentVolumeClaim:

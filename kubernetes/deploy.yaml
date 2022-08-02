@@ -14,9 +14,8 @@ spec:
         app: jenkins
     spec:
       securityContext:
-        runAsUser: 0
+        runAsUser: 1000
         fsGroup: 0
-      serviceAccountName: jenkins-admin
       containers:
       - name: jenkins
         image: rizk95/jenkins_with_docker_terra_ansible_kubectl
